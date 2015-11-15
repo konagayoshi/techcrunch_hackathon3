@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<title>多言語でレストラン検索APIの結果を取得する</title>
+</head>
+<body>
+<% translator = MicrosoftTranslator::Client.new('sinatra-group', 'DP/0qQ4RviIi0V21y89fbQPEqsLONWsXzG7ys0RqYbQ=') %>;
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<%= javascript_tag do %>
+
+function koshin(){
+  //location.reload();
+  window.location.href = "/";
+}
+
+(function(){
+ 
+  var url = 'http://api.gnavi.co.jp/RestSearchAPI/20150630/?callback=?';
+  var params = {
+    keyid: '',
+    format: 'json',
+    latitude: 35.670083,
+    longitude: 139.763267,
+    range: 1
+  };
+
+  params.keyid = '<%= j ENV['GURUNABI_KEY'] %>';
+  '<% j @lang = translator.detect(@type) %>';
+  params.freeword = '<%= j translator.translate(@type,@lang,"ja","text/html") %>';
+  var lang = '<%= j @lang %>';
+  var showResult = function(result){
+    if ( result.total_hit_count > 0 ) {
+      var res = '';
+    for ( var i in result.rest ){
+      res +=  '<a href=' + result.rest[i].url  +' target="_blank">';
+      res += result.rest[i].name + ' ' + result.rest[i].access.line + ' ' + result.rest[i].access.station + ' ' + result.rest[i].access.walk + '分';
+      res += '</a><br />';
+      res += '<img src =' + result.rest[i].image_url.shop_image1 + ' /><br /><br />';
+      }
+      res += '<input type="button"  value="Back to Search" onclick="koshin()">';
+      res += ' ' + lang + '<br />';
+      document.write(res);
+
+    } else {
+      alert( '検索結果が見つかりませんでした。' );
+    }
+  }
+
+//  $(document).on('click', '.js--apply', function(){
+//    params.freeword = $('.js--key').val();
+    $.getJSON(url, params, function(result){
+      showResult(result);
+    });
+//  });
+ 
+})(jQuery);
+<% end %> 
+<!--</script>-->
+<p>
+</p>
+
+</body>
+</html>

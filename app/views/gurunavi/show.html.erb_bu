@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<title>レストラン検索</title>
+</head>
+<body>
+<input type="text" placeholder="Enter key word" class="js--key"><input type="button" value="Search" class="js--apply" />
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script>
+
+function koshin(){
+  location.reload();
+}
+ 
+(function(){
+  var url = 'http://api.gnavi.co.jp/RestSearchAPI/20150630/?callback=?';
+  var params = {
+    keyid: '',
+    format: 'json',
+    latitude: 35.670083,
+    longitude: 139.763267,
+    range: 1
+  };
+  params.keyid = "75d1f35d9d2e9de48bd75a346f7988ba";
+
+  var showResult = function(result){
+    if ( result.total_hit_count > 0 ) {
+      var res = '';
+//      alert( result.total_hit_count + '件の結果が見つかりました。\n' );
+    for ( var i in result.rest ){
+      res +=  '<a href=' + result.rest[i].url  +' target="_blank">';
+      res += result.rest[i].name + ' ' + result.rest[i].access.line + ' ' + result.rest[i].access.station + ' ' + result.rest[i].access.walk + '分';
+    res += '</a><br />';
+      res += '<img src =' + result.rest[i].image_url.shop_image1 + ' /><br /><br />';
+      }
+     res += '<input type="button"  value="Reload" onclick="koshin()">';
+      document.write(res);
+
+    } else {
+      alert( '検索結果が見つかりませんでした。' );
+    }
+  }
+
+  $(document).on('click', '.js--apply', function(){
+    params.keyid = $('.js--key').val();
+    $.getJSON(url, params, function(result){
+      showResult(result);
+    });
+  });
+ 
+})(jQuery);
+
+<p>
+Prefer = <%= @type %><br />
+Language = <%= @lang %><br />
+</p>
+
+</script>
+</body>
+</html>

@@ -1,5 +1,9 @@
 source 'https://rubygems.org'
 
+gem 'rails_12factor', group: :production
+ruby '2.2.2'
+
+gem 'microsoft_translator'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.4'

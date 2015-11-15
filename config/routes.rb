@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
+  root 'gurunavi#index'
   post "gurunavi/show" => "gurunavi#show"
+  #get  'public/post.html'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
